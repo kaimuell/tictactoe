@@ -1,5 +1,16 @@
 package foo;
 
 public enum EFieldState {
-    CROSS, CIRCLE, EMPTY;
+    CROSS("x"), CIRCLE("o"), EMPTY("_");
+    
+    private final String ZEICHEN;
+    
+    private EFieldState(String zeichen) {
+        this.ZEICHEN = zeichen;
+    }
+
+    public String getZEICHEN() {
+        return ZEICHEN;
+    }
+
 }
