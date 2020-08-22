@@ -30,7 +30,7 @@ public class Model implements IModel {
                 stringbuilder.append(fieldStates[i][j].getZEICHEN());
             }
         }
-//        stringbuilder.append("\n");
+        stringbuilder.append("\n");
         return stringbuilder.toString();
 
     }
