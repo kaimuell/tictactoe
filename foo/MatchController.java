@@ -23,11 +23,17 @@ public class MatchController {
             
             boolean gerade = i % 2 == 0;
             IPlayer currentPlayer = gerade ? p1: p2;
-            Point p = currentPlayer.getZug(model.toServerString());
             EFieldState currentState = gerade ? EFieldState.CROSS : EFieldState.CIRCLE;
-            model.setFeldZustand(p.x, p.y, currentState);
-            for (IView aktView : views) {
-                aktView.refresh();    
+            try {
+                Point p = currentPlayer.getZug(model.toServerString());
+                                                         model.setFeldZustand(p.x, p.y, currentState);
+                for (IView aktView : views) {
+                    aktView.refresh();    
+                }
+            } catch (PlayerException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                System.exit(0);
             }
             
         }

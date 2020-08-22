@@ -13,17 +13,15 @@ public class NetworkPlayer implements IPlayer {
     }
 
     @Override
-    public Point getZug(String s){
+    public Point getZug(String s) throws PlayerException{
         try {
             String response = com.communicate(s);
             int i = Integer.parseInt(response.trim()) -1;
-            int col = (i%3);
             int row = (i /3);
+            int col = (i%3);
             return new Point(row, col);
         } catch (CommunicatorException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
+               throw new PlayerException(e);
         }
     }
 
