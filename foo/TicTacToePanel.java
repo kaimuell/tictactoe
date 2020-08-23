@@ -1,19 +1,33 @@
 package foo;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
-public class TicTacToePanel extends JPanel implements IView{
+public class TicTacToePanel extends JPanel implements IView, IInputDevice {
 
     private IModel model;
+    private IMoveListener iml;
+    private double scale;
 
     public TicTacToePanel(IModel model) {
         this.model = model;
         Color c = new Color(180, 140, 55);
         setBackground(c);
         setPreferredSize(new Dimension(450, 450));
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int x = (int) (e.getX() / scale / 100);
+                int y = (int) (e.getY() / scale / 100);
+                if (x >= 0 && x <= 2 && y >= 0 && y <= 2 && iml != null) {
+                    iml.moveOccured(y, x);
+                }
+            }
+        });
     }
 
     @Override
@@ -32,11 +46,11 @@ public class TicTacToePanel extends JPanel implements IView{
                 EFieldState efs = model.getFeldZustand(j, i);
                 switch (efs) {
                 case CROSS:
-                    g2d.drawLine( i*100 +10,  j*100 +10, i*100 + 90, j*100 + 90);
-                    g2d.drawLine( i*100 +90,  j*100 + 10, i*100 +10, j*100 + 90);
+                    g2d.drawLine(i * 100 + 10, j * 100 + 10, i * 100 + 90, j * 100 + 90);
+                    g2d.drawLine(i * 100 + 90, j * 100 + 10, i * 100 + 10, j * 100 + 90);
                     break;
                 case CIRCLE:
-                    g2d.drawOval(10 + (i*100), 10 + (j*100), 80, 80);
+                    g2d.drawOval(10 + (i * 100), 10 + (j * 100), 80, 80);
                     break;
                 default:
                     break;
@@ -51,12 +65,12 @@ public class TicTacToePanel extends JPanel implements IView{
         g2d.drawLine(0, 200, 300, 200);
         g2d.drawLine(100, 0, 100, 300);
         g2d.drawLine(200, 0, 200, 300);
-    }        
+    }
 
     private void configureGraphicsForUsageOfUserCoordinateSystem(Graphics2D g2d) {
         double sx = this.getWidth() / 300.0;
         double sy = this.getHeight() / 300.0;
-        double scale = Math.min(sx, sy);
+        scale = Math.min(sx, sy);
         AffineTransform aft = AffineTransform.getScaleInstance(scale, scale);
         g2d.setTransform(aft);
     }
@@ -64,7 +78,13 @@ public class TicTacToePanel extends JPanel implements IView{
     @Override
     public void refresh() {
         repaint();
-        
+
+    }
+
+    @Override
+    public void setMoveListener(IMoveListener iml) {
+        this.iml = iml;
+
     }
 
 }
