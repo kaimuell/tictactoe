@@ -16,11 +16,14 @@ public class NetworkPlayer implements IPlayer {
     public Point getZug(String s) throws PlayerException{
         try {
             String response = com.communicate(s);
+            if (response.startsWith("Error")) {
+                throw new PlayerException(response);
+            }
             int i = Integer.parseInt(response.trim()) -1;
             int row = (i /3);
             int col = (i%3);
             return new Point(row, col);
-        } catch (CommunicatorException e) {
+        } catch (CommunicatorException | NumberFormatException e) {
                throw new PlayerException(e);
         }
     }
