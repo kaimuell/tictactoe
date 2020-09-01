@@ -4,7 +4,7 @@ import java.awt.Point;
 
 public class HumanPlayer implements IPlayer, IMoveListener {
 
-    private Point move;
+    private volatile Point move; //volatile - verhindert das Cachen der variable move 
     private IInputDevice device;
 
     public HumanPlayer(IInputDevice device) {
@@ -29,5 +29,5 @@ public class HumanPlayer implements IPlayer, IMoveListener {
         }
         return move;
     }
-
+ 
 }

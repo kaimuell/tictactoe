@@ -1,7 +1,12 @@
 package foo;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Model implements IModel {
     EFieldState[][] fieldStates;
+    List<Point> winningFields;
 
     public Model() {
         this.fieldStates = new EFieldState[3][3];
@@ -10,6 +15,7 @@ public class Model implements IModel {
                 fieldStates[i][j] = EFieldState.EMPTY;
             }
         }
+        this.winningFields = new ArrayList<Point>(3);
     }
 
     @Override
@@ -49,4 +55,13 @@ public class Model implements IModel {
 
     }
 
+    @Override
+    public void setWinningFields(int row, int col) {
+        winningFields.add(new Point(row, col));
+    }
+
+    @Override
+    public List<Point> getWinningFields() {
+        return winningFields;
+    }
 }

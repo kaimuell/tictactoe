@@ -1,59 +1,69 @@
-package foo;
+package aiplayer;
 
 import java.awt.Point;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public class MatchController implements Runnable {
+import foo.*;
+
+public class AITrainingMatchController extends MatchController implements Runnable {
     private IPlayer p1;
     private IPlayer p2;
     private IModel model;
     private List<IView> views;
+    private List<AITrainer> aiTrainerList;
     private boolean won;
+    int durchlauefe;
     private GameStateController gameStateController;
 
-    public MatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views, GameStateController gameStateController) {
+    public AITrainingMatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views, GameStateController gameStateController, int durchlaufe) {
+        super(p1, p2, model, views, gameStateController);
         this.p1 = p1;
         this.p2 = p2;
         this.model = model;
         this.views = views;
         this.gameStateController = gameStateController;
         won = false;
+        this.durchlauefe = durchlaufe;
+        this.aiTrainerList = new ArrayList<>(2);
     }
 
+    @Override
     protected void play() {
-        gameStateController.notifyOfNewGame();
-        for (int i = 0; i < 9; i++) {
-            if (!won) {
-                boolean gerade = i % 2 == 0;
-                IPlayer currentPlayer = gerade ? p1 : p2;
-                EFieldState currentState = gerade ? EFieldState.CROSS : EFieldState.CIRCLE;
-                try {
-                    Point p = currentPlayer.getZug(model.toServerString());
-                    model.setFeldZustand(p.x, p.y, currentState);
-                    won = matchWon();
-                    if (won) {
-                        gameStateController.notifyOfGameEnd(getWinner());
+        for (int j = 0; j < durchlauefe; j++) {
+            gameStateController.notifyOfNewGame();
+            System.out.println("Spiel Nummer : " + j);
+            model = new Model();
+            won = false;
+            for (int i = 0; i < 9; i++) {
+                if (!won) { // TODO Wenn Funktional for und if durch while(!won) ersetzen
+                    boolean gerade = i % 2 == 0;
+                    IPlayer currentPlayer = gerade ? p1 : p2;
+                    EFieldState currentState = gerade ? EFieldState.CROSS : EFieldState.CIRCLE;
+                    try {
+                        Point p = currentPlayer.getZug(model.toServerString());
+                        model.setFeldZustand(p.x, p.y, currentState);
+                        won = matchWon();
+                        for (IView aktView : views) {
+                            aktView.refresh();
+                        }
+                    } catch (PlayerException e) {
+                        e.printStackTrace();
+                        System.exit(0);
                     }
-                    for (IView aktView : views) {
-                        aktView.refresh();
-                    }
-                } catch (PlayerException e) {
-                    e.printStackTrace();
-                    System.exit(0);
                 }
+            gameStateController.notifyOfGameEnd(getWinner());
             }
+        }
+        for (AITrainer aiTrainer : aiTrainerList) {
+            aiTrainer.saveAIPlayer();
+            System.out.println(aiTrainer.getWinRatio());
         }
     }
 
-    public void setPlayerOne(IPlayer player) {
-        this.p1 = player;
-    }
 
-    public void setPlayerTwo(IPlayer player) {
-        this.p2 = player;
+    public void addAITrainer(AITrainer trainer) {
+        aiTrainerList.add(trainer);
     }
-
 
     private boolean matchWon() {
         if (model.getFeldZustand(1, 1) != EFieldState.EMPTY && model.getFeldZustand(0, 0) == model.getFeldZustand(1, 1)
@@ -99,16 +109,17 @@ public class MatchController implements Runnable {
         play();
     }
 
+    @Override
     public boolean isMatchWon() {
         return won;
     }
 
+    @Override
     public EFieldState getWinner() {
         if (!model.getWinningFields().isEmpty()) {
             Point p = model.getWinningFields().get(0);
             return model.getFeldZustand(p.x, p.y);
         }
-        return null;
+        return EFieldState.EMPTY;
     }
-
 }
