@@ -1,8 +1,9 @@
-package aiplayer;
+package controller;
 
 import java.awt.Point;
 import java.util.*;
 
+import aiplayer.AITrainer;
 import foo.*;
 
 public class AITrainingMatchController extends MatchController implements Runnable {
@@ -15,7 +16,8 @@ public class AITrainingMatchController extends MatchController implements Runnab
     int durchlauefe;
     private GameStateController gameStateController;
 
-    public AITrainingMatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views, GameStateController gameStateController, int durchlaufe) {
+    public AITrainingMatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views,
+            GameStateController gameStateController, int durchlaufe) {
         super(p1, p2, model, views, gameStateController);
         this.p1 = p1;
         this.p2 = p2;
@@ -31,38 +33,53 @@ public class AITrainingMatchController extends MatchController implements Runnab
     protected void play() {
         for (int j = 0; j < durchlauefe; j++) {
             gameStateController.notifyOfNewGame();
-            System.out.println("Spiel Nummer : " + j);
-            model = new Model();
-            won = false;
+            resetGame();
+            System.out.println("Durchlauf " + j);
             for (int i = 0; i < 9; i++) {
-                if (!won) { // TODO Wenn Funktional for und if durch while(!won) ersetzen
+                if (!isMatchWon()) {
                     boolean gerade = i % 2 == 0;
                     IPlayer currentPlayer = gerade ? p1 : p2;
                     EFieldState currentState = gerade ? EFieldState.CROSS : EFieldState.CIRCLE;
-                    try {
-                        Point p = currentPlayer.getZug(model.toServerString());
-                        model.setFeldZustand(p.x, p.y, currentState);
-                        won = matchWon();
-                        for (IView aktView : views) {
-                            aktView.refresh();
+                    boolean moved = false;
+                    while (!moved) {
+                        try {
+                            Point p = currentPlayer.getZug(model.toServerString());
+                            if (isValidMove(p)) {
+                                model.setFeldZustand(p.x, p.y, currentState);
+                                moved = true;
+                            }
+                            won = matchWon();
+                            if (won) {
+                                gameStateController.notifyOfGameEnd(getWinner());
+                            }
+                            for (IView aktView : views) {
+                                aktView.refresh();
+                            }
+                        } catch (PlayerException e) {
+                            e.printStackTrace();
+                            System.exit(0);
                         }
-                    } catch (PlayerException e) {
-                        e.printStackTrace();
-                        System.exit(0);
                     }
                 }
-            gameStateController.notifyOfGameEnd(getWinner());
             }
         }
         for (AITrainer aiTrainer : aiTrainerList) {
+            System.out.println("Sieg Durchschnitt: " + aiTrainer.getWinRatio());
             aiTrainer.saveAIPlayer();
-            System.out.println(aiTrainer.getWinRatio());
         }
     }
 
-
     public void addAITrainer(AITrainer trainer) {
         aiTrainerList.add(trainer);
+    }
+
+    @Override
+    public boolean isValidMove(Point selectedPoint) {
+        if (model.getFeldZustand(selectedPoint.x, selectedPoint.y) == EFieldState.EMPTY) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean matchWon() {
@@ -121,5 +138,13 @@ public class AITrainingMatchController extends MatchController implements Runnab
             return model.getFeldZustand(p.x, p.y);
         }
         return EFieldState.EMPTY;
+    }
+    @Override
+    public void resetGame() {
+        model.resetModel();
+        won = false;
+        for (IView aktView : views) {
+            aktView.refresh();
+        }
     }
 }

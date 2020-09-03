@@ -1,4 +1,4 @@
-package foo;
+package gui;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -7,6 +7,8 @@ import java.awt.geom.AffineTransform;
 import java.util.Iterator;
 
 import javax.swing.JPanel;
+
+import foo.*;
 
 public class TicTacToePanel extends JPanel implements IView, IInputDevice {
 

@@ -1,8 +1,9 @@
-package foo;
+package controller;
 
 import java.awt.Point;
-import java.util.LinkedList;
 import java.util.List;
+
+import foo.*;
 
 public class MatchController implements Runnable {
     private IPlayer p1;
@@ -12,7 +13,8 @@ public class MatchController implements Runnable {
     private boolean won;
     private GameStateController gameStateController;
 
-    public MatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views, GameStateController gameStateController) {
+    public MatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views,
+            GameStateController gameStateController) {
         this.p1 = p1;
         this.p2 = p2;
         this.model = model;
@@ -24,25 +26,42 @@ public class MatchController implements Runnable {
     protected void play() {
         gameStateController.notifyOfNewGame();
         for (int i = 0; i < 9; i++) {
-            if (!won) {
+            if (!isMatchWon()) {
                 boolean gerade = i % 2 == 0;
                 IPlayer currentPlayer = gerade ? p1 : p2;
                 EFieldState currentState = gerade ? EFieldState.CROSS : EFieldState.CIRCLE;
-                try {
-                    Point p = currentPlayer.getZug(model.toServerString());
-                    model.setFeldZustand(p.x, p.y, currentState);
-                    won = matchWon();
-                    if (won) {
-                        gameStateController.notifyOfGameEnd(getWinner());
+                boolean moved = false;
+                while (!moved) {
+                    try {
+                        Point p = currentPlayer.getZug(model.toServerString());
+                        if (isValidMove(p)) {
+                            model.setFeldZustand(p.x, p.y, currentState);
+                            moved = true;
+                        }
+                        won = matchWon();
+                        if (won) {
+                            gameStateController.notifyOfGameEnd(getWinner());
+                        }
+                        for (IView aktView : views) {
+                            aktView.refresh();
+                        }
+                    } catch (PlayerException e) {
+                        e.printStackTrace();
+                        System.exit(0);
                     }
-                    for (IView aktView : views) {
-                        aktView.refresh();
-                    }
-                } catch (PlayerException e) {
-                    e.printStackTrace();
-                    System.exit(0);
                 }
             }
+        }
+        if (!won) {
+            gameStateController.notifyOfGameEnd(EFieldState.EMPTY);
+        }
+    }
+
+    public boolean isValidMove(Point selectedPoint) {
+        if (model.getFeldZustand(selectedPoint.x, selectedPoint.y) == EFieldState.EMPTY) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -53,7 +72,6 @@ public class MatchController implements Runnable {
     public void setPlayerTwo(IPlayer player) {
         this.p2 = player;
     }
-
 
     private boolean matchWon() {
         if (model.getFeldZustand(1, 1) != EFieldState.EMPTY && model.getFeldZustand(0, 0) == model.getFeldZustand(1, 1)
@@ -109,6 +127,14 @@ public class MatchController implements Runnable {
             return model.getFeldZustand(p.x, p.y);
         }
         return null;
+    }
+
+    public void resetGame() {
+        model.resetModel();
+        won = false;
+        for (IView aktView : views) {
+            aktView.refresh();
+        }
     }
 
 }

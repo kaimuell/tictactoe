@@ -10,4 +10,5 @@ public interface IModel {
     String toServerString();
     List<Point> getWinningFields();
     void setWinningFields(int row, int col);
+    void resetModel();
 }

@@ -1,4 +1,4 @@
-package foo;
+package gui;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;

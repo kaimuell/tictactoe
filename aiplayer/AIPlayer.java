@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import controller.GameStateController;
 import foo.*;
 
 public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
@@ -13,9 +14,10 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     private AITreeNode treeNodeHeader;
     
 
-    public AIPlayer(AIPlayer aiPlayer) {
+    public AIPlayer(GameStateController controller, AIPlayer aiPlayer) {
         this.treeNodeHeader = aiPlayer.getTreeNodeHeader();
         this.aktTreeNode = treeNodeHeader;
+        controller.addWinStateListener(this);
     }
 
     public AIPlayer(GameStateController controller, String filename) {
@@ -88,7 +90,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         }
         if (!found) {
             throw new PlayerException(
-                    "Fehler in AITreeNode.updateCurrentFieldState : Übergebener Spielfeldzustand nicht in AITree");
+                    "Fehler in AITreeNode.updateCurrentFieldState : Übergebener Spielfeldzustand nicht in AITree " + s + " in " +aktTreeNode.getField());
         }
     }
 

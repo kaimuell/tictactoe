@@ -64,4 +64,14 @@ public class Model implements IModel {
     public List<Point> getWinningFields() {
         return winningFields;
     }
+
+    @Override
+    public void resetModel() {
+        for (int i = 0; i < fieldStates.length; i++) {
+            for (int j = 0; j < fieldStates[i].length; j++) {
+                fieldStates[i][j] = EFieldState.EMPTY;
+            }
+        }
+        this.winningFields = new ArrayList<Point>(3);
+    }
 }

@@ -1,7 +1,10 @@
-package foo;
+package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import foo.EFieldState;
+import foo.IWinStateListener;
 
 public class GameStateController {
     private List<IWinStateListener> stateListenerList;
