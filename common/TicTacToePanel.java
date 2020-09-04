@@ -25,7 +25,7 @@ public class TicTacToePanel extends JPanel implements IView, IInputDevice {
         setPreferredSize(new Dimension(450, 450));
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
                 int x = (int) (e.getX() / scale / 100);
                 int y = (int) (e.getY() / scale / 100);
                 if (x >= 0 && x <= 2 && y >= 0 && y <= 2 && iml != null) {
