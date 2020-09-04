@@ -17,9 +17,9 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     
 
     public AIPlayer(GameStateController controller, AIPlayer aiPlayer) {
+        controller.addWinStateListener(this);
         this.treeNodeHeader = aiPlayer.getTreeNodeHeader();
         this.aktTreeNode = treeNodeHeader;
-        controller.addWinStateListener(this);
     }
 
     public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException{
@@ -33,8 +33,8 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         
         controller.addWinStateListener(this);
         AITreeNode aitn = new AITreeNode("_________");
-        this.aktTreeNode = aitn;
         this.treeNodeHeader = aitn;
+        this.aktTreeNode = aitn;
     }
 
     public void resetDecisionTree() {

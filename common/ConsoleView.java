@@ -15,5 +15,4 @@ public class ConsoleView implements IView {
     public void refresh() {
         System.out.println(model);
     }
-
 }

@@ -63,6 +63,9 @@ public class AITrainer implements IPlayer, IWinStateListener {
 
     @Override
     public void winNotification(EFieldState winner) {
+        if (winner == playerState) {
+          ai.getAktTreeNode().clearListOfPossibleMoves();
+        }
         while (!nodeStack.isEmpty()) {
             AITreeNode tn = nodeStack.pop();
             System.out.println("Update Knoten : " + tn.getField());

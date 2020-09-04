@@ -3,7 +3,7 @@ package aiplayer;
 import java.io.Serializable;
 import java.util.*;
 
-public class AITreeNode implements Serializable, Comparable<Weighable>, Weighable {
+public class AITreeNode implements Serializable {
 
     private String field;
     private int weight;
@@ -13,7 +13,7 @@ public class AITreeNode implements Serializable, Comparable<Weighable>, Weighabl
     AITreeNode(String field) {
         this.field = field;
         weight = 0;
-        possibleMoves = new ArrayList<AITreeNode>();
+        possibleMoves = new ArrayList<AITreeNode>(9);
         evaluateAktualPlayer(field);
         generatePossibleMoves(field);
     }
@@ -60,15 +60,12 @@ public class AITreeNode implements Serializable, Comparable<Weighable>, Weighabl
         weight++;
     }
     
-    @Override
-    public int getWeight() {
-        return weight;
+    protected void clearListOfPossibleMoves() {
+        possibleMoves.clear();
     }
     
-
-    @Override
-    public int compareTo(Weighable o) {
-        return this.weight - o.getWeight();
+    public int getWeight() {
+        return weight;
     }
 
     public void sortPossibleMoves() {

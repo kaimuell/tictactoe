@@ -24,12 +24,12 @@ public class StartTikTakToe {
         IInputDevice input = panel;
         JComponent compo = panel;
 
-        JComponentTestFrame jctf = new JComponentTestFrame(compo);
+        TicTacToeFrame jctf = new TicTacToeFrame(compo);
         viewList.add(view);
         GameStateController gsc = new GameStateController();
         PlayerSetupController psc = new PlayerSetupController(input, gsc);
-        IPlayer p1 = psc.getHumanPlayer1();
-        IPlayer p2 = psc.getHumanPlayer2();
+        IPlayer p1 = psc.getHumanPlayer(PlayerID.PLAYERONE);
+        IPlayer p2 = psc.getHumanPlayer(PlayerID.PLAYERTWO);
         MatchController mc = new MatchController(p1, p2, model, viewList, gsc);
         ControlPanel controlPanel = new ControlPanel(mc, gsc, psc);
         jctf.add(controlPanel, BorderLayout.SOUTH);

@@ -3,6 +3,7 @@ package controller;
 import java.util.ArrayList;
 
 import aiplayer.AIPlayer;
+import common.PlayerID;
 import interfaces.IInputDevice;
 import interfaces.IPlayerSetupListener;
 import player.*;
@@ -31,28 +32,22 @@ public class PlayerSetupController {
         randomPlayer = new RandomPlayer();
     }
 
-    public HumanPlayer getHumanPlayer1() {
-        return humanPlayer1;
+    public HumanPlayer getHumanPlayer(PlayerID playerID) {
+        return playerID == PlayerID.PLAYERONE ? humanPlayer1 : humanPlayer2;
     }
 
-    public HumanPlayer getHumanPlayer2() {
-        return humanPlayer2;
-    }
 
     public RandomPlayer getRandomPlayer() {
         return randomPlayer;
     }
 
-    public NetworkPlayer getNetworkPlayer1() {
-        return networkPlayer1;
+
+    public NetworkPlayer getNetworkPlayer(PlayerID playerID) {
+        return playerID == PlayerID.PLAYERONE ? networkPlayer1 : networkPlayer2;
     }
 
-    public NetworkPlayer getNetworkPlayer2() {
-        return networkPlayer2;
-    }
-
-    public AIPlayer getAiPlayer1() {
-        return aiPlayer1;
+    public AIPlayer getAiPlayer(PlayerID playerID) {
+        return playerID == PlayerID.PLAYERONE ? aiPlayer1 : aiPlayer2;
     }
 
     public AIPlayer getAiPlayer2() {
