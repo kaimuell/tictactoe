@@ -1,4 +1,4 @@
-package foo;
+package player;
 
 public class PlayerException extends Exception {
 

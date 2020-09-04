@@ -1,43 +1,34 @@
 package controller;
 
-import java.nio.file.FileSystems;
+import java.util.ArrayList;
 
 import aiplayer.AIPlayer;
-import foo.*;
+import interfaces.IInputDevice;
+import interfaces.IPlayerSetupListener;
+import player.*;
 
 public class PlayerSetupController {
     HumanPlayer humanPlayer1, humanPlayer2;
+    RandomPlayer randomPlayer;
     NetworkPlayer networkPlayer1, networkPlayer2;
     AIPlayer aiPlayer1, aiPlayer2;
     GameStateController gameStateController;
+    ArrayList<IPlayerSetupListener> playerSetupListenerList;
 
     public PlayerSetupController(IInputDevice inputDevice, GameStateController gameStateController) {
         this.gameStateController = gameStateController;
         defaultSetup(inputDevice);
+        this.playerSetupListenerList = new ArrayList<>();
+    }
+
+    public void addPlayerSetupListener(IPlayerSetupListener playerSetupListener) {
+        playerSetupListenerList.add(playerSetupListener);
     }
 
     private void defaultSetup(IInputDevice inputdevice) {
         this.humanPlayer1 = new HumanPlayer(inputdevice);
         this.humanPlayer2 = new HumanPlayer(inputdevice);
-
-        try {
-            this.networkPlayer1 = new NetworkPlayer("localhost");
-            networkPlayer1.getZug("_________");
-        } catch (Exception e) {
-            this.networkPlayer1 = null;
-        }
-        this.networkPlayer2 = networkPlayer1;
-
-        try {
-            String path = FileSystems.getDefault().getPath("src", "ai", "tiktaktoe.ai").toString();
-            this.aiPlayer1 = new AIPlayer(gameStateController, path);
-            this.aiPlayer2 = new AIPlayer(gameStateController, aiPlayer1);
-        } catch (Exception e) {
-            System.out.println("KI Spieler konnte nicht geladen werden");
-            aiPlayer1 = null;
-            aiPlayer2 = null;
-        }
-
+        randomPlayer = new RandomPlayer();
     }
 
     public HumanPlayer getHumanPlayer1() {
@@ -46,6 +37,10 @@ public class PlayerSetupController {
 
     public HumanPlayer getHumanPlayer2() {
         return humanPlayer2;
+    }
+
+    public RandomPlayer getRandomPlayer() {
+        return randomPlayer;
     }
 
     public NetworkPlayer getNetworkPlayer1() {
@@ -64,23 +59,41 @@ public class PlayerSetupController {
         return aiPlayer2;
     }
 
-    public void setHumanPlayersInputDevice(IInputDevice inputDevice) {
+    public void setHumanPlayerOnesInputDevice(IInputDevice inputDevice) {
         this.humanPlayer1 = new HumanPlayer(inputDevice);
+        informPlayerSetupListeners();
+    }
+    
+    public void setHumanPlayerTwosInputDevice(IInputDevice inputDevice) {
+        this.humanPlayer2 = new HumanPlayer(inputDevice);
+        informPlayerSetupListeners();
+    }
+
+    public void setNetworkPlayer(NetworkPlayer networkPlayer) {
+
+        this.networkPlayer1 = networkPlayer;
+        this.networkPlayer2 = networkPlayer1;
+        informPlayerSetupListeners();
     }
 
     public void setNetworkPlayerServer(String adress) {
 
         this.networkPlayer1 = new NetworkPlayer(adress);
         this.networkPlayer2 = networkPlayer1;
+        informPlayerSetupListeners();
     }
 
-    public void setNetworkPlayer2(NetworkPlayer networkPlayer2) {
-        this.networkPlayer2 = networkPlayer2;
-    }
-
-    public void setAiPlayerSource(String source) {
-        this.aiPlayer1 = new AIPlayer(gameStateController, source);
+    public void setAiPlayer(AIPlayer aiPlayer) {
+        this.aiPlayer1 = aiPlayer;
         this.aiPlayer2 = new AIPlayer(gameStateController, aiPlayer1);
+        informPlayerSetupListeners();
+    }
+
+    private void informPlayerSetupListeners() {
+        for (IPlayerSetupListener iPlayerSetupListener : playerSetupListenerList) {
+            iPlayerSetupListener.playersUpdated();
+        }
+
     }
 
 }

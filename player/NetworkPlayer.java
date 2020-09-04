@@ -1,9 +1,10 @@
-package foo;
+package player;
 
 import java.awt.Point;
 
 import de.mpaap.util.com.Communicator;
 import de.mpaap.util.com.CommunicatorException;
+import interfaces.IPlayer;
 
 public class NetworkPlayer implements IPlayer {
     private Communicator com;
@@ -13,7 +14,7 @@ public class NetworkPlayer implements IPlayer {
     }
 
     @Override
-    public Point getZug(String s) throws PlayerException{
+    public Point getMove(String s) throws PlayerException{
         try {
             String response = com.communicate(s);
             if (response.startsWith("Error")) {

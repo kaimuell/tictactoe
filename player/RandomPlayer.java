@@ -1,10 +1,9 @@
-package aiplayer;
+package player;
 
 import java.awt.Point;
 import java.util.Random;
 
-import foo.IPlayer;
-import foo.PlayerException;
+import interfaces.IPlayer;
 
 public class RandomPlayer implements IPlayer{
     Random random;
@@ -13,7 +12,7 @@ public class RandomPlayer implements IPlayer{
 }
 
     @Override
-    public Point getZug(String s) throws PlayerException {
+    public Point getMove(String s) throws PlayerException {
         s = s.trim();
         while (true) {
             int i = Math.abs(random.nextInt() %9);

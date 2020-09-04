@@ -1,4 +1,4 @@
-package gui;
+package common;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;

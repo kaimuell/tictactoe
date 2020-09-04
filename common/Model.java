@@ -1,8 +1,10 @@
-package foo;
+package common;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+
+import interfaces.IModel;
 
 public class Model implements IModel {
     EFieldState[][] fieldStates;
@@ -19,12 +21,12 @@ public class Model implements IModel {
     }
 
     @Override
-    public EFieldState getFeldZustand(int row, int column) {
+    public EFieldState getFieldState(int row, int column) {
         return fieldStates[row][column];
     }
 
     @Override
-    public void setFeldZustand(int row, int column, EFieldState state) {
+    public void setFieldState(int row, int column, EFieldState state) {
         this.fieldStates[row][column] = state;
     }
 

@@ -1,4 +1,4 @@
-package foo;
+package interfaces;
 
 public interface IPlayerSettings {
     IPlayer getPlayerOne();

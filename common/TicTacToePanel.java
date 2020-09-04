@@ -1,4 +1,4 @@
-package gui;
+package common;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -8,7 +8,7 @@ import java.util.Iterator;
 
 import javax.swing.JPanel;
 
-import foo.*;
+import interfaces.*;
 
 public class TicTacToePanel extends JPanel implements IView, IInputDevice {
 
@@ -61,7 +61,7 @@ public class TicTacToePanel extends JPanel implements IView, IInputDevice {
     private void drawFieldStates(Graphics2D g2d) {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                EFieldState efs = model.getFeldZustand(j, i);
+                EFieldState efs = model.getFieldState(j, i);
                 switch (efs) {
                 case CROSS:
                     g2d.drawLine(i * 100 + 10, j * 100 + 10, i * 100 + 90, j * 100 + 90);

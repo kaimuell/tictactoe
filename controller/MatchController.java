@@ -3,7 +3,9 @@ package controller;
 import java.awt.Point;
 import java.util.List;
 
-import foo.*;
+import common.EFieldState;
+import interfaces.*;
+import player.PlayerException;
 
 public class MatchController implements Runnable {
     private IPlayer p1;
@@ -33,9 +35,9 @@ public class MatchController implements Runnable {
                 boolean moved = false;
                 while (!moved) {
                     try {
-                        Point p = currentPlayer.getZug(model.toServerString());
+                        Point p = currentPlayer.getMove(model.toServerString());
                         if (isValidMove(p)) {
-                            model.setFeldZustand(p.x, p.y, currentState);
+                            model.setFieldState(p.x, p.y, currentState);
                             moved = true;
                         }
                         won = matchWon();
@@ -58,7 +60,7 @@ public class MatchController implements Runnable {
     }
 
     public boolean isValidMove(Point selectedPoint) {
-        if (model.getFeldZustand(selectedPoint.x, selectedPoint.y) == EFieldState.EMPTY) {
+        if (model.getFieldState(selectedPoint.x, selectedPoint.y) == EFieldState.EMPTY) {
             return true;
         } else {
             return false;
@@ -74,15 +76,15 @@ public class MatchController implements Runnable {
     }
 
     private boolean matchWon() {
-        if (model.getFeldZustand(1, 1) != EFieldState.EMPTY && model.getFeldZustand(0, 0) == model.getFeldZustand(1, 1)
-                && model.getFeldZustand(1, 1) == model.getFeldZustand(2, 2)) {
+        if (model.getFieldState(1, 1) != EFieldState.EMPTY && model.getFieldState(0, 0) == model.getFieldState(1, 1)
+                && model.getFieldState(1, 1) == model.getFieldState(2, 2)) {
             model.setWinningFields(0, 0);
             model.setWinningFields(1, 1);
             model.setWinningFields(2, 2);
             return true;
         }
-        if (model.getFeldZustand(1, 1) != EFieldState.EMPTY && model.getFeldZustand(0, 2) == model.getFeldZustand(1, 1)
-                && model.getFeldZustand(1, 1) == model.getFeldZustand(2, 0)) {
+        if (model.getFieldState(1, 1) != EFieldState.EMPTY && model.getFieldState(0, 2) == model.getFieldState(1, 1)
+                && model.getFieldState(1, 1) == model.getFieldState(2, 0)) {
             model.setWinningFields(0, 2);
             model.setWinningFields(1, 1);
             model.setWinningFields(2, 0);
@@ -90,9 +92,9 @@ public class MatchController implements Runnable {
         }
 
         for (int i = 0; i < 3; i++) {
-            if (model.getFeldZustand(i, 0) != EFieldState.EMPTY
-                    && model.getFeldZustand(i, 0) == model.getFeldZustand(i, 1)
-                    && model.getFeldZustand(i, 1) == model.getFeldZustand(i, 2)) {
+            if (model.getFieldState(i, 0) != EFieldState.EMPTY
+                    && model.getFieldState(i, 0) == model.getFieldState(i, 1)
+                    && model.getFieldState(i, 1) == model.getFieldState(i, 2)) {
                 model.setWinningFields(i, 0);
                 model.setWinningFields(i, 1);
                 model.setWinningFields(i, 2);
@@ -100,9 +102,9 @@ public class MatchController implements Runnable {
             }
         }
         for (int i = 0; i < 3; i++) {
-            if (model.getFeldZustand(0, i) != EFieldState.EMPTY
-                    && model.getFeldZustand(0, i) == model.getFeldZustand(1, i)
-                    && model.getFeldZustand(1, i) == model.getFeldZustand(2, i)) {
+            if (model.getFieldState(0, i) != EFieldState.EMPTY
+                    && model.getFieldState(0, i) == model.getFieldState(1, i)
+                    && model.getFieldState(1, i) == model.getFieldState(2, i)) {
                 model.setWinningFields(0, i);
                 model.setWinningFields(1, i);
                 model.setWinningFields(2, i);
@@ -124,7 +126,7 @@ public class MatchController implements Runnable {
     public EFieldState getWinner() {
         if (!model.getWinningFields().isEmpty()) {
             Point p = model.getWinningFields().get(0);
-            return model.getFeldZustand(p.x, p.y);
+            return model.getFieldState(p.x, p.y);
         }
         return null;
     }

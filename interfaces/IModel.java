@@ -1,12 +1,14 @@
-package foo;
+package interfaces;
 
 import java.awt.Point;
 import java.util.List;
 
+import common.EFieldState;
+
 public interface IModel {
 
-    EFieldState getFeldZustand(int row, int column);
-    void setFeldZustand(int row, int column, EFieldState state);
+    EFieldState getFieldState(int row, int column);
+    void setFieldState(int row, int column, EFieldState state);
     String toServerString();
     List<Point> getWinningFields();
     void setWinningFields(int row, int col);

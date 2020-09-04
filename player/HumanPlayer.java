@@ -1,6 +1,8 @@
-package foo;
+package player;
 
 import java.awt.Point;
+
+import interfaces.*;
 
 public class HumanPlayer implements IPlayer, IMoveListener {
 
@@ -17,7 +19,7 @@ public class HumanPlayer implements IPlayer, IMoveListener {
     }
 
     @Override
-    public Point getZug(String s) throws PlayerException {
+    public Point getMove(String s) throws PlayerException {
         move = null;
         device.setMoveListener(this);
         while (move==null) {

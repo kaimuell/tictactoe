@@ -3,8 +3,8 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import foo.EFieldState;
-import foo.IWinStateListener;
+import common.EFieldState;
+import interfaces.IWinStateListener;
 
 public class GameStateController {
     private List<IWinStateListener> stateListenerList;

@@ -5,19 +5,22 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import common.*;
 import controller.GameStateController;
 import controller.MatchController;
-import foo.*;
+import interfaces.*;
 
 public class StartButton extends JButton implements IWinStateListener {
     boolean gameStarted;
     MatchController matchController;
     IPlayerSettings playerSettings;
 
-    public StartButton(MatchController matchController, GameStateController gameStateController, IPlayerSettings playerSettings) {
+    StartButton(MatchController matchController, GameStateController gameStateController,
+            IPlayerSettings playerSettings) {
+        
         super("START");
         this.matchController = matchController;
-       gameStateController.addWinStateListener(this);
+        gameStateController.addWinStateListener(this);
         this.playerSettings = playerSettings;
         gameStarted = false;
         this.addActionListener(new ActionListener() {
@@ -44,7 +47,7 @@ public class StartButton extends JButton implements IWinStateListener {
 
     @Override
     public void newGameNotification() {
-        
+
     }
 
 }

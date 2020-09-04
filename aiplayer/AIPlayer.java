@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import common.*;
 import controller.GameStateController;
-import foo.*;
+import interfaces.*;
+import player.PlayerException;
 
 public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
 
@@ -20,17 +22,10 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         controller.addWinStateListener(this);
     }
 
-    public AIPlayer(GameStateController controller, String filename) {
+    public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException{
         controller.addWinStateListener(this);
         AIPlayerLoadSaver ls = new AIPlayerLoadSaver();
-        try {
-            this.treeNodeHeader = ls.loadAIPlayer(filename).getTreeNodeHeader();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println("Konnte Datei nicht öffnen");
-            e.printStackTrace();
-        }
+        this.treeNodeHeader = ls.loadAIPlayer(filename).getTreeNodeHeader();
         this.aktTreeNode = treeNodeHeader;
     }
 
@@ -47,7 +42,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     }
 
     @Override
-    public Point getZug(String s) throws PlayerException {
+    public Point getMove(String s) throws PlayerException {
         s = s.trim();
         if (s.equals(aktTreeNode.getField())) {
             return makeNextMove(s);
@@ -78,7 +73,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         throw new PlayerException("Fehler in AIPlayer.makeFirstMove : Nummer des Nächsten Zuges nicht gefunden.");
     }
 
-    private void updateCurrentFieldState(String s) throws PlayerException {
+    protected void updateCurrentFieldState(String s) throws PlayerException {
         boolean found = false;
         Iterator<AITreeNode> it = aktTreeNode.getPossibleMoves().iterator();
         while (!found && it.hasNext()) {
@@ -96,6 +91,11 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
 
     protected AITreeNode getAktTreeNode() {
         return aktTreeNode;
+    }
+    
+    protected void setAktTreeNode(AITreeNode treeNode) {
+        this.aktTreeNode = treeNode;
+        
     }
 
     @Override

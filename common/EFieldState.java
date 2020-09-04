@@ -1,4 +1,4 @@
-package foo;
+package common;
 
 public enum EFieldState {
     CROSS("x"), CIRCLE("o"), EMPTY("_");

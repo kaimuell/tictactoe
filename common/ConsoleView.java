@@ -1,4 +1,7 @@
-package foo;
+package common;
+
+import interfaces.IModel;
+import interfaces.IView;
 
 public class ConsoleView implements IView {
     private IModel model;
