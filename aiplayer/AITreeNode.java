@@ -13,11 +13,11 @@ public class AITreeNode implements Serializable {
     AITreeNode(String field) {
         this.field = field;
         weight = 0;
-        possibleMoves = new ArrayList<AITreeNode>(9);
+        possibleMoves = new LinkedList<AITreeNode>();
         evaluateAktualPlayer(field);
         generatePossibleMoves(field);
     }
-    
+
     private void generatePossibleMoves(String f) {
         for (int i = 0; i < f.length(); i++) {
             if (f.charAt(i) == '_') {
@@ -26,7 +26,15 @@ public class AITreeNode implements Serializable {
                     char aktChar = j == i ? aktPlayer : f.charAt(j);
                     tempField.append(aktChar);
                 }
-                possibleMoves.add(new AITreeNode(tempField.toString()));
+                boolean alreadyInDecisionTree = false;
+                for (AITreeNode aiTreeNode : possibleMoves) {
+                    if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(aiTreeNode.getField(), tempField.toString()) != -1) {
+                        alreadyInDecisionTree = true;
+                    }
+                }
+                if (!alreadyInDecisionTree) {
+                    possibleMoves.add(new AITreeNode(tempField.toString()));
+                }
             }
         }
     }
@@ -44,7 +52,7 @@ public class AITreeNode implements Serializable {
         aktPlayer = x > o ? 'o' : 'x';
     }
 
-    public List<AITreeNode> getPossibleMoves() {
+    protected List<AITreeNode> getPossibleMoves() {
         return possibleMoves;
     }
 
@@ -55,20 +63,20 @@ public class AITreeNode implements Serializable {
     protected void decreaseWeight() {
         weight--;
     }
-    
+
     protected void increaseWeight() {
         weight++;
     }
-    
+
     protected void clearListOfPossibleMoves() {
         possibleMoves.clear();
     }
-    
+
     public int getWeight() {
         return weight;
     }
 
-    public void sortPossibleMoves() {
+    protected void sortPossibleMoves() {
         possibleMoves.sort(Comparator.comparing(AITreeNode::getWeight));
     }
 

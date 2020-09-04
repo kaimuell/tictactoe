@@ -29,7 +29,7 @@ public class StartAITrainingPartTwo {
 
         AITrainer trainer = new AITrainer(ai, EFieldState.CIRCLE, path);
 
-        AITrainingMatchController mc = new AITrainingMatchController( p1, trainer, model, viewList, gsc, 3000000);
+        AITrainingMatchController mc = new AITrainingMatchController( p1, trainer, model, viewList, gsc, 500000);
 
         gsc.addWinStateListener(trainer);
         mc.addAITrainer(trainer);

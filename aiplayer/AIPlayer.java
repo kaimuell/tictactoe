@@ -14,7 +14,6 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
 
     private AITreeNode aktTreeNode;
     private AITreeNode treeNodeHeader;
-    
 
     public AIPlayer(GameStateController controller, AIPlayer aiPlayer) {
         controller.addWinStateListener(this);
@@ -22,7 +21,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         this.aktTreeNode = treeNodeHeader;
     }
 
-    public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException{
+    public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException {
         controller.addWinStateListener(this);
         AIPlayerLoadSaver ls = new AIPlayerLoadSaver();
         this.treeNodeHeader = ls.loadAiPlayerDecisionTree(filename);
@@ -30,7 +29,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     }
 
     public AIPlayer(GameStateController controller) {
-        
+
         controller.addWinStateListener(this);
         AITreeNode aitn = new AITreeNode("_________");
         this.treeNodeHeader = aitn;
@@ -44,7 +43,8 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     @Override
     public Point getMove(String s) throws PlayerException {
         s = s.trim();
-        if (s.equals(aktTreeNode.getField())) {
+       int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s, aktTreeNode.getField());
+        if (rotation != -1) {
             return makeNextMove(s);
         } else {
             updateCurrentFieldState(s);
@@ -58,13 +58,14 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     }
 
     private Point makeNextMove(String s) throws PlayerException {
-        if (!aktTreeNode.getField().equals(s.trim())) {
+        int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s.trim(), aktTreeNode.getField());
+        if (rotation == -1) {
             throw new PlayerException("Spielzüge Stimmen nicht überein");
         }
         aktTreeNode.sortPossibleMoves();
-        String formerState = s.trim();
+        String formerState = FieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
         aktTreeNode = aktTreeNode.getPossibleMoves().get(0);
-        String nextState = aktTreeNode.getField();
+        String nextState = FieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
         for (int i = 0; i < s.length(); i++) {
             if (formerState.charAt(i) == '_' && nextState.charAt(i) != '_') {
                 return new Point((i / 3), (i % 3));
@@ -78,26 +79,30 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         Iterator<AITreeNode> it = aktTreeNode.getPossibleMoves().iterator();
         while (!found && it.hasNext()) {
             AITreeNode ait = it.next();
-            if (ait.getField().equals(s.trim())) {
+            if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(s.trim(), ait.getField()) != -1) {
                 aktTreeNode = ait;
                 found = true;
             }
         }
         if (!found) {
             throw new PlayerException(
-                    "Fehler in AITreeNode.updateCurrentFieldState : Übergebener Spielfeldzustand nicht in AITree " + s + " in " +aktTreeNode.getField());
+                    "Fehler in AITreeNode.updateCurrentFieldState : Übergebener Spielfeldzustand nicht in AITree " + s
+                            + " in " + aktTreeNode.getField());
         }
     }
 
     protected AITreeNode getAktTreeNode() {
         return aktTreeNode;
     }
-    
+
     protected void setAktTreeNode(AITreeNode treeNode) {
         this.aktTreeNode = treeNode;
-        
+
     }
 
+    
+    
+    
     @Override
     public void newGameNotification() {
         resetDecisionTree();
@@ -107,5 +112,5 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     @Override
     public void winNotification(EFieldState winner) {
     }
-
+    
 }

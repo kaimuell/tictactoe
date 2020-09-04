@@ -27,7 +27,8 @@ public class AITrainer implements IPlayer, IWinStateListener {
     @Override
     public Point getMove(String s) throws PlayerException {
         s = s.trim();
-        if (!s.equals(ai.getAktTreeNode().getField())){               
+        int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s, ai.getAktTreeNode().getField());
+        if (rotation == -1) {
             ai.updateCurrentFieldState(s);
         }
         int nextForcedMove = computeCaseNextMoveIsWinningMove(s);
@@ -36,6 +37,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
             p = ai.getMove(s);
             nodeStack.push(ai.getAktTreeNode());
         } else {
+         
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < 9; i++) {
                 if (nextForcedMove != i) {
@@ -48,15 +50,16 @@ public class AITrainer implements IPlayer, IWinStateListener {
             }
             String nextForcedFieldState = stringBuilder.toString();
             searchForMatchingTreeNodeAndSetItAsAktual(nextForcedFieldState);
+            nodeStack.push(ai.getAktTreeNode());
         }
-        return p;
+
+    return p;
     }
 
     private void searchForMatchingTreeNodeAndSetItAsAktual(String nextForcedFieldState) {
         for (AITreeNode ait : ai.getAktTreeNode().getPossibleMoves()) {
-            if (ait.getField().equals(nextForcedFieldState)) {
+            if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(ait.getField(), nextForcedFieldState) != -1) {
                 ai.setAktTreeNode(ait);
-                nodeStack.push(ai.getAktTreeNode());
             }
         }
     }
@@ -64,7 +67,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
     @Override
     public void winNotification(EFieldState winner) {
         if (winner == playerState) {
-          ai.getAktTreeNode().clearListOfPossibleMoves();
+            ai.getAktTreeNode().clearListOfPossibleMoves();
         }
         while (!nodeStack.isEmpty()) {
             AITreeNode tn = nodeStack.pop();
@@ -99,12 +102,16 @@ public class AITrainer implements IPlayer, IWinStateListener {
     }
 
     private int computeCaseNextMoveIsWinningMove(String s) {
-        for (AITreeNode ait : ai.getAktTreeNode().getPossibleMoves()) {
-            if (isMatchWon(ait.getField())) {
-                for (int i = 0; i < 9; i++) {
-                    if (s.charAt(i) != ait.getField().charAt(i)) {
-                        return i;
-                    }
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '_') {
+                StringBuilder sbX = new StringBuilder();
+                StringBuilder sbO = new StringBuilder();
+                for (int j = 0; j < s.length(); j++) {
+                    sbX.append(j == i ? 'x' : s.charAt(j));
+                    sbO.append(j == i ? 'o' : s.charAt(j));
+                }
+                if (isMatchWon(sbX.toString()) || isMatchWon(sbO.toString())) {
+                    return i;
                 }
             }
         }
@@ -120,8 +127,8 @@ public class AITrainer implements IPlayer, IWinStateListener {
         }
 
         for (int i = 0; i < 3; i++) {
-           int j = i*3;
-            if (!(s.charAt(j) == '_') && ((s.charAt(j) == s.charAt(j+ 1) && s.charAt(j + 1) == s.charAt(j + 2)))) {
+            int j = i * 3;
+            if (!(s.charAt(j) == '_') && ((s.charAt(j) == s.charAt(j + 1) && s.charAt(j + 1) == s.charAt(j + 2)))) {
                 return true;
             }
         }
