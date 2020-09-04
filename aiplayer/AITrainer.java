@@ -78,6 +78,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
             } else if (winner != EFieldState.EMPTY) {
                 gamesLost++;
                 tn.increaseWeight();
+                tn.increaseWeight();
             }
         }
         ai.resetDecisionTree();
@@ -100,8 +101,9 @@ public class AITrainer implements IPlayer, IWinStateListener {
     public void newGameNotification() {
         ai.resetDecisionTree();
     }
-
+    
     private int computeCaseNextMoveIsWinningMove(String s) {
+        int secondaryCondition = -1;
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == '_') {
                 StringBuilder sbX = new StringBuilder();
@@ -110,12 +112,27 @@ public class AITrainer implements IPlayer, IWinStateListener {
                     sbX.append(j == i ? 'x' : s.charAt(j));
                     sbO.append(j == i ? 'o' : s.charAt(j));
                 }
-                if (isMatchWon(sbX.toString()) || isMatchWon(sbO.toString())) {
+                if (isMatchWon(sbX.toString())) {
+                    if (playerState.equals(EFieldState.CROSS)){ 
+                        System.out.println("SiegKnoten" + s +" :  " + sbX.toString()+ " : " + i);
                     return i;
+                    } else {
+                        System.out.println("SiegKnoten verhindert " + s +" :  " + sbX.toString() + " : " + i);
+                        secondaryCondition = i;
+                    }
+                }
+                if (isMatchWon(sbO.toString())) {
+                   if (playerState.equals(EFieldState.CIRCLE)) {
+                       System.out.println("SiegKnoten" + s +" :  " + sbO.toString()+ " : " + i);
+                       return i;
+                   } else {
+                       System.out.println("SiegKnoten verhindert" + s +" :  " + sbO .toString()+ " : " + i);
+                       secondaryCondition = i;
+                   }
                 }
             }
         }
-        return -1;
+        return secondaryCondition;
     }
 
     private boolean isMatchWon(String s) {
@@ -125,15 +142,14 @@ public class AITrainer implements IPlayer, IWinStateListener {
         if (!(s.charAt(2) == '_') && (s.charAt(2) == s.charAt(4) && s.charAt(4) == s.charAt(6))) {
             return true;
         }
-
         for (int i = 0; i < 3; i++) {
             int j = i * 3;
-            if (!(s.charAt(j) == '_') && ((s.charAt(j) == s.charAt(j + 1) && s.charAt(j + 1) == s.charAt(j + 2)))) {
+            if (!(s.charAt(j) == '_') && (s.charAt(j) == s.charAt(j + 1) && s.charAt(j + 1) == s.charAt(j + 2))) {
                 return true;
             }
         }
         for (int i = 0; i < 3; i++) {
-            if (!(s.charAt(i) == '_') && ((s.charAt(i) == s.charAt(i + 3) && s.charAt(i + 3) == s.charAt(i + 6)))) {
+            if (!(s.charAt(i) == '_') && (s.charAt(i) == s.charAt(i + 3) && s.charAt(i + 3) == s.charAt(i + 6))) {
                 return true;
             }
         }
