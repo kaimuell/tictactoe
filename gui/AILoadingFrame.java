@@ -47,7 +47,7 @@ public class AILoadingFrame extends JFrame{
                 aiLoadingFrame.setVisible(false);
             }
         });
-        JLabel warningLabel = new JLabel("Laden dauert ca eine Minute");
+        JLabel warningLabel = new JLabel("Laden dauert einige Sekunden");
         
         
         panel.add(label);

@@ -65,7 +65,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
     }
 
     @Override
-    public void winNotification(EFieldState winner) {
+    public synchronized void winNotification(EFieldState winner) {
         if (winner == playerState) {
             ai.getAktTreeNode().clearListOfPossibleMoves();
         }
@@ -78,6 +78,9 @@ public class AITrainer implements IPlayer, IWinStateListener {
             } else if (winner != EFieldState.EMPTY) {
                 gamesLost++;
                 tn.increaseWeight();
+                tn.increaseWeight();
+                tn.increaseWeight();
+            }else {
                 tn.increaseWeight();
             }
         }
@@ -112,23 +115,8 @@ public class AITrainer implements IPlayer, IWinStateListener {
                     sbX.append(j == i ? 'x' : s.charAt(j));
                     sbO.append(j == i ? 'o' : s.charAt(j));
                 }
-                if (isMatchWon(sbX.toString())) {
-                    if (playerState.equals(EFieldState.CROSS)){ 
-                        System.out.println("SiegKnoten" + s +" :  " + sbX.toString()+ " : " + i);
+                if (isMatchWon(sbO.toString()) || isMatchWon(sbX.toString())) {
                     return i;
-                    } else {
-                        System.out.println("SiegKnoten verhindert " + s +" :  " + sbX.toString() + " : " + i);
-                        secondaryCondition = i;
-                    }
-                }
-                if (isMatchWon(sbO.toString())) {
-                   if (playerState.equals(EFieldState.CIRCLE)) {
-                       System.out.println("SiegKnoten" + s +" :  " + sbO.toString()+ " : " + i);
-                       return i;
-                   } else {
-                       System.out.println("SiegKnoten verhindert" + s +" :  " + sbO .toString()+ " : " + i);
-                       secondaryCondition = i;
-                   }
                 }
             }
         }
