@@ -25,7 +25,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException{
         controller.addWinStateListener(this);
         AIPlayerLoadSaver ls = new AIPlayerLoadSaver();
-        this.treeNodeHeader = ls.loadAIPlayer(filename).getTreeNodeHeader();
+        this.treeNodeHeader = ls.loadAiPlayerDecisionTree(filename);
         this.aktTreeNode = treeNodeHeader;
     }
 

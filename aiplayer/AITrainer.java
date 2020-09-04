@@ -83,7 +83,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
 
     public void saveAIPlayer(String filename) {
         AIPlayerLoadSaver pls = new AIPlayerLoadSaver();
-        pls.saveAIPlayer(ai, filename);
+        pls.saveAiPlayerDecisionTree(ai, filename);
     }
 
     public double getWinRatio() {
@@ -108,7 +108,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
         return -1;
     }
 
-    public boolean isMatchWon(String s) {
+    private boolean isMatchWon(String s) {
         if (!(s.charAt(0) == '_') && (s.charAt(0) == s.charAt(4) && s.charAt(4) == s.charAt(8))) {
             return true;
         }
