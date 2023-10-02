@@ -5,15 +5,15 @@ import java.util.*;
 
 public class AITreeNode implements Serializable {
 
-    private String field;
+    private final String field;
     private int weight;
-    private List<AITreeNode> possibleMoves;
+    private final List<AITreeNode> possibleMoves;
     private char aktPlayer;
 
     AITreeNode(String field) {
         this.field = field;
         weight = 0;
-        possibleMoves = new LinkedList<AITreeNode>();
+        possibleMoves = new LinkedList<>();
         evaluateAktualPlayer(field);
         generatePossibleMoves(field);
     }
@@ -57,7 +57,7 @@ public class AITreeNode implements Serializable {
     }
 
     public String getField() {
-        return field.toString();
+        return field;
     }
 
     public void decreaseWeight() {

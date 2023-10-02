@@ -16,7 +16,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         IModel model = new Model();
-        List<IView> viewList = new ArrayList<IView>(2);
+        List<IView> viewList = new ArrayList<>(2);
         viewList.add(new ConsoleView(model));
         TicTacToePanel panel = new TicTacToePanel(model);
 

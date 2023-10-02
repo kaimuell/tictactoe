@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.*;
 import java.nio.file.FileSystems;
 
 import javax.swing.*;
@@ -17,8 +16,8 @@ import controller.PlayerSetupController;
 
 public class AILoadingFrame extends JFrame{
     
-    private JLabel notificationLabel;
-    private JFrame aiLoadingFrame;
+    private final JLabel notificationLabel;
+    private final JFrame aiLoadingFrame;
 
     
     AILoadingFrame(GameStateController gameStateController, PlayerSetupController playerSetupController) {
@@ -31,26 +30,18 @@ public class AILoadingFrame extends JFrame{
         notificationLabel = new JLabel("");
         JLabel label = new JLabel ("Pfad der KI :");
         JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String aipath = aiSource.getText();
-                    AIPlayer aiPlayer1 = new AIPlayer(gameStateController, aipath);
-                    playerSetupController.setAiPlayer(aiPlayer1);
-                    notificationLabel.setText("KI geladen");                  
-                } catch (Exception ex) {
-                    notificationLabel.setText("Laden fehlgeschlagen");
-                }
+        okButton.addActionListener(e -> {
+            try {
+                String aipath = aiSource.getText();
+                AIPlayer aiPlayer1 = new AIPlayer(gameStateController, aipath);
+                playerSetupController.setAiPlayer(aiPlayer1);
+                notificationLabel.setText("KI geladen");
+            } catch (Exception ex) {
+                notificationLabel.setText("Laden fehlgeschlagen");
             }
         });
         JButton closeButton = new JButton("CLOSE");
-        closeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aiLoadingFrame.setVisible(false);
-            }
-        });
+        closeButton.addActionListener(e -> aiLoadingFrame.setVisible(false));
         JLabel warningLabel = new JLabel("Laden dauert einige Sekunden");
         
         

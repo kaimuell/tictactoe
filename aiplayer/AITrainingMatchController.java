@@ -10,14 +10,14 @@ import interfaces.*;
 import player.PlayerException;
 
 public class AITrainingMatchController extends MatchController implements Runnable {
-    private IPlayer p1;
-    private IPlayer p2;
-    private IModel model;
-    private List<IView> views;
-    private List<AITrainer> aiTrainerList;
+    private final IPlayer p1;
+    private final IPlayer p2;
+    private final IModel model;
+    private final List<IView> views;
+    private final List<AITrainer> aiTrainerList;
     private boolean won;
     int durchlauefe;
-    private GameStateController gameStateController;
+    private final GameStateController gameStateController;
 
     public AITrainingMatchController(IPlayer p1, IPlayer p2, IModel model, List<IView> views,
             GameStateController gameStateController, int durchlaufe) {

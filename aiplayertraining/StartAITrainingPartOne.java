@@ -21,7 +21,7 @@ public class StartAITrainingPartOne {
         String path = FileSystems.getDefault().getPath("src", "ai", "tiktaktoe.ai").toString();
         GameStateController gsc = new GameStateController();
         IModel model = new Model();
-        List<IView> viewList = new ArrayList<IView>(2);
+        List<IView> viewList = new ArrayList<>(2);
         AIPlayer ai =null;
         try {
             ai = new AIPlayer(gsc,path);
@@ -30,6 +30,7 @@ public class StartAITrainingPartOne {
             e.printStackTrace();
         }
 
+        assert ai != null;
         for (AITreeNode tn : ai.getTreeNodeHeader().getPossibleMoves()) {
             if (tn.getField().equals("____x____")) {
                 System.out.println("Feld gefunden");
