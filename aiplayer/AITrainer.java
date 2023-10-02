@@ -27,7 +27,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
     @Override
     public Point getMove(String s) throws PlayerException {
         s = s.trim();
-        int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s, ai.getAktTreeNode().getField());
+        int rotation = TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(s, ai.getAktTreeNode().getField());
         if (rotation == -1) {
             ai.updateCurrentFieldState(s);
         }
@@ -58,7 +58,7 @@ public class AITrainer implements IPlayer, IWinStateListener {
 
     private void searchForMatchingTreeNodeAndSetItAsAktual(String nextForcedFieldState) {
         for (AITreeNode ait : ai.getAktTreeNode().getPossibleMoves()) {
-            if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(ait.getField(), nextForcedFieldState) != -1) {
+            if (TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(ait.getField(), nextForcedFieldState) != -1) {
                 ai.setAktTreeNode(ait);
             }
         }

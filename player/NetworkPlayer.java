@@ -6,9 +6,18 @@ import de.mpaap.util.com.Communicator;
 import de.mpaap.util.com.CommunicatorException;
 import interfaces.IPlayer;
 
+/**
+ * Klasse um einen Netzwerkspieler zu implementieren
+ *
+ */
+
 public class NetworkPlayer implements IPlayer {
     private Communicator com;
-
+    
+    /**
+     * Konstruktor
+     * @param host der Host des Netzwerkspielers
+     */
     public NetworkPlayer(String host) {
         this.com = new Communicator(host, 7890,"UTF-8");
     }

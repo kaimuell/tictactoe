@@ -28,7 +28,7 @@ public class AITreeNode implements Serializable {
                 }
                 boolean alreadyInDecisionTree = false;
                 for (AITreeNode aiTreeNode : possibleMoves) {
-                    if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(aiTreeNode.getField(), tempField.toString()) != -1) {
+                    if (TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(aiTreeNode.getField(), tempField.toString()) != -1) {
                         alreadyInDecisionTree = true;
                     }
                 }

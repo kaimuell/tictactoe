@@ -3,12 +3,19 @@ package player;
 import java.awt.Point;
 
 import interfaces.*;
-
+/**
+ * Klasse um einen Menschlichen Spieler zu implementieren
+ *
+ */
 public class HumanPlayer implements IPlayer, IMoveListener {
 
     private volatile Point move; //volatile - verhindert das Cachen der variable move 
     private IInputDevice device;
 
+    /**
+     * Konstruktor
+     * @param device das Eingabegerät des Spielers
+     */
     public HumanPlayer(IInputDevice device) {
         this.device = device;
     }

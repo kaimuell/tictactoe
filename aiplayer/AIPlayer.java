@@ -10,17 +10,33 @@ import controller.GameStateController;
 import interfaces.*;
 import player.PlayerException;
 
+/**
+ * Implementiert einen KI Spieler
+ *
+ */
 public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
 
     private AITreeNode aktTreeNode;
     private AITreeNode treeNodeHeader;
 
+    /**
+     * Konstruktor
+     * @param controller    der zugewiesene Controller 
+     * @param aiPlayer      ein anderer Ki-Spieler, dessen Entscheidungsbaum übernommen werden soll
+     */
     public AIPlayer(GameStateController controller, AIPlayer aiPlayer) {
         controller.addWinStateListener(this);
         this.treeNodeHeader = aiPlayer.getTreeNodeHeader();
         this.aktTreeNode = treeNodeHeader;
     }
 
+        /**
+         * Konstruktor um einen KI-Spieler zu erstellen, dessen Entscheidungsbaum aus einer Datei geladen wird
+         * @param controller    der zugewiesene Controller
+         * @param filename      die Datei aus der der Entscheidungsbaum geladen werden soll
+         * @throws ClassNotFoundException   
+         * @throws IOException
+         */
     public AIPlayer(GameStateController controller, String filename) throws ClassNotFoundException, IOException {
         controller.addWinStateListener(this);
         AIPlayerLoadSaver ls = new AIPlayerLoadSaver();
@@ -28,7 +44,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         this.aktTreeNode = treeNodeHeader;
     }
 
-    public AIPlayer(GameStateController controller) {
+    protected AIPlayer(GameStateController controller) {
 
         controller.addWinStateListener(this);
         AITreeNode aitn = new AITreeNode("_________");
@@ -36,14 +52,14 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         this.aktTreeNode = aitn;
     }
 
-    public void resetDecisionTree() {
+    protected void resetDecisionTree() {
         aktTreeNode = treeNodeHeader;
     }
 
     @Override
     public Point getMove(String s) throws PlayerException {
         s = s.trim();
-       int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s, aktTreeNode.getField());
+       int rotation = TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(s, aktTreeNode.getField());
         if (rotation != -1) {
             return makeNextMove(s);
         } else {
@@ -58,14 +74,14 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
     }
 
     private Point makeNextMove(String s) throws PlayerException {
-        int rotation = FieldRotationEvaluator.fieldStatesMatchInARotationNo(s.trim(), aktTreeNode.getField());
+        int rotation = TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(s.trim(), aktTreeNode.getField());
         if (rotation == -1) {
             throw new PlayerException("Spielzüge Stimmen nicht überein");
         }
         aktTreeNode.sortPossibleMoves();
-        String formerState = FieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
+        String formerState = TikTakToeFieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
         aktTreeNode = aktTreeNode.getPossibleMoves().get(0);
-        String nextState = FieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
+        String nextState = TikTakToeFieldRotationEvaluator.rotateFieldToRotation(aktTreeNode.getField(), rotation);
         for (int i = 0; i < s.length(); i++) {
             if (formerState.charAt(i) == '_' && nextState.charAt(i) != '_') {
                 return new Point((i / 3), (i % 3));
@@ -79,7 +95,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         Iterator<AITreeNode> it = aktTreeNode.getPossibleMoves().iterator();
         while (!found && it.hasNext()) {
             AITreeNode ait = it.next();
-            if (FieldRotationEvaluator.fieldStatesMatchInARotationNo(s.trim(), ait.getField()) != -1) {
+            if (TikTakToeFieldRotationEvaluator.fieldStatesMatchInRotationNumber(s.trim(), ait.getField()) != -1) {
                 aktTreeNode = ait;
                 found = true;
             }
