@@ -52,7 +52,7 @@ public class AITreeNode implements Serializable {
         aktPlayer = x > o ? 'o' : 'x';
     }
 
-    protected List<AITreeNode> getPossibleMoves() {
+    public List<AITreeNode> getPossibleMoves() {
         return possibleMoves;
     }
 
@@ -60,7 +60,7 @@ public class AITreeNode implements Serializable {
         return field.toString();
     }
 
-    protected void decreaseWeight() {
+    public void decreaseWeight() {
         weight--;
     }
 

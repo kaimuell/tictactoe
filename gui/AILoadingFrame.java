@@ -11,6 +11,10 @@ import aiplayer.AIPlayer;
 import controller.GameStateController;
 import controller.PlayerSetupController;
 
+/**
+ * Frame to load an AI Model
+ */
+
 public class AILoadingFrame extends JFrame{
     
     private JLabel notificationLabel;

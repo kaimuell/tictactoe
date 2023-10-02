@@ -44,7 +44,7 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
         this.aktTreeNode = treeNodeHeader;
     }
 
-    protected AIPlayer(GameStateController controller) {
+    public AIPlayer(GameStateController controller) {
 
         controller.addWinStateListener(this);
         AITreeNode aitn = new AITreeNode("_________");
@@ -66,10 +66,9 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
             updateCurrentFieldState(s);
             return makeNextMove(s);
         }
-
     }
 
-    protected AITreeNode getTreeNodeHeader() {
+    public AITreeNode getTreeNodeHeader() {
         return treeNodeHeader;
     }
 
@@ -113,16 +112,11 @@ public class AIPlayer implements IPlayer, Serializable, IWinStateListener {
 
     protected void setAktTreeNode(AITreeNode treeNode) {
         this.aktTreeNode = treeNode;
-
     }
-
-    
-    
     
     @Override
     public void newGameNotification() {
         resetDecisionTree();
-
     }
 
     @Override

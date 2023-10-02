@@ -33,7 +33,7 @@ public class AITrainingMatchController extends MatchController implements Runnab
     }
 
     @Override
-    protected void play() {
+    public void play() {
         for (int j = 0; j < durchlauefe; j++) {
             gameStateController.notifyOfNewGame();
             resetGame();
